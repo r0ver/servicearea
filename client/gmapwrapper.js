@@ -13,6 +13,9 @@
     Geolocation
     http://diveintohtml5.info/geolocation.html    
     
+    Drawing tools
+    https://developers.google.com/maps/documentation/javascript/examples/drawing-tools
+    
 */
 
 function initialize() {
@@ -32,9 +35,8 @@ function initialize() {
       }, function() { handleNoGeolocation(map) } )
     } else {
           handleNoGeolocation(map);
- }
-
-   
+ }     
+    
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
       document.getElementById('pac-input'));
@@ -86,8 +88,37 @@ function initialize() {
   // current map's viewport.
   google.maps.event.addListener(map, 'bounds_changed', function() {
     var bounds = map.getBounds();
-    searchBox.setBounds(bounds);
+    searchBox.setBounds(bounds);      
   });
+    
+  // Adding a DrawingManager
+    var drawingManager = new google.maps.drawing.DrawingManager({
+    drawingMode: google.maps.drawing.OverlayType.MARKER,
+    drawingControl: true,
+    drawingControlOptions: {
+      position: google.maps.ControlPosition.BOTTOM_CENTER,
+      drawingModes: [
+        google.maps.drawing.OverlayType.MARKER,
+        google.maps.drawing.OverlayType.CIRCLE,
+        google.maps.drawing.OverlayType.POLYGON,
+        google.maps.drawing.OverlayType.POLYLINE,
+        google.maps.drawing.OverlayType.RECTANGLE
+      ]
+    },
+    markerOptions: {
+      icon: 'images/beachflag.png'
+    },
+    circleOptions: {
+      fillColor: '#ffff00',
+      fillOpacity: 1,
+      strokeWeight: 5,
+      clickable: false,
+      editable: true,
+      zIndex: 1
+    }
+  });
+  drawingManager.setMap(map);       
+    
 }
 
 function show_map(position) {

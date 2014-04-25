@@ -16,6 +16,9 @@
     Drawing tools
     https://developers.google.com/maps/documentation/javascript/examples/drawing-tools
     
+    Hiding tools after one polygon
+    http://stackoverflow.com/questions/14166546/google-maps-drawing-manager-limit-to-1-polygon
+    
 */
 
 function initialize() {
@@ -93,15 +96,10 @@ function initialize() {
     
   // Adding a DrawingManager
     var drawingManager = new google.maps.drawing.DrawingManager({
-    drawingMode: google.maps.drawing.OverlayType.MARKER,
     drawingControl: true,
     drawingControlOptions: {
       position: google.maps.ControlPosition.BOTTOM_CENTER,
       drawingModes: [
-        google.maps.drawing.OverlayType.MARKER,
-        google.maps.drawing.OverlayType.CIRCLE,
-        google.maps.drawing.OverlayType.POLYGON,
-        google.maps.drawing.OverlayType.POLYLINE,
         google.maps.drawing.OverlayType.RECTANGLE
       ]
     },
@@ -115,16 +113,33 @@ function initialize() {
       clickable: false,
       editable: true,
       zIndex: 1
+    },
+    rectangleOptions: {
+            editable: true
     }
   });
-  drawingManager.setMap(map);       
     
-}
+  google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+            if (e.type != google.maps.drawing.OverlayType.MARKER) {
+            // Switch back to non-drawing mode after drawing a shape.
+            drawingManager.setDrawingMode(null);
+            drawingManager.setOptions({drawingControl: false});    
 
-function show_map(position) {
-  var latitude = position.coords.latitude;
-  var longitude = position.coords.longitude;
-  // let's show a map or do something interesting!
+            // Add an event listener that selects the newly-drawn shape when the user
+            // mouses down on it.
+            var newShape = e.overlay;
+            newShape.type = e.type;
+            google.maps.event.addListener(newShape, 'click', function() {
+              setSelection(newShape);
+            });
+            setSelection(newShape);
+            
+          }
+  });  
+    
+  drawingManager.setMap(map);   
+    
+    
 }
 
 function handleNoGeolocation(errorFlag) {

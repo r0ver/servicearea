@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Service Area</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!--
+    Include the maps javascript with sensor=true because this code is using a
+    sensor (a GPS locator) to determine the user's location.
+    See: https://developers.google.com/maps/documentation/javascript/tutorial#Loading_the_Maps_API
+    -->  
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
+    <script src="gmapwrapper.js"></script>   
+   
+  </head>
+  <body>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div id="map-canvas"></div>
+    
+  </body>
+</html>
+
+
+<!--
+    Documentation:
+
+    Places search box
+    https://developers.google.com/maps/documentation/javascript/examples/places-searchbox?hl=FR
+
+    Map Geolocation
+    https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
+
+-->

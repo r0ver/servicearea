@@ -111,6 +111,8 @@ function initialize() {
     
   // Hide DrawingControler when one shape is drawed    
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+            var latLongBox = document.getElementById('latLongBox');
+                              
             if (e.type != google.maps.drawing.OverlayType.MARKER) {
             // Switch back to non-drawing mode after drawing a shape.
             drawingManager.setDrawingMode(null);
@@ -122,8 +124,10 @@ function initialize() {
             newShape.type = e.type;
             google.maps.event.addListener(newShape, 'click', function() {
               setSelection(newShape);
+              latLongBox.style.display = 'inline';    
             });
             setSelection(newShape); 
+            latLongBox.style.display = 'inline';    
           }
   });  
     
@@ -135,6 +139,13 @@ function initialize() {
   controlDiv.index = 1;
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
     
+
+  /* Controllers: Add submit and clear button */
+  var latLongBox = document.createElement('div');
+  latLongControl = new ControlLatLong(latLongBox, map); 
+  latLongBox.index = 1;
+  map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(latLongBox);
+      
 }
 
 function handleNoGeolocation(map) {
@@ -172,8 +183,9 @@ function deleteSelectedShape() {
       selectedShape.setMap(null);
     }
 
+    latLongBox.style.display = 'none';
     drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
-    drawingManager.setOptions({drawingControl: true});   
+    drawingManager.setOptions({drawingControl: true});  
   }
 
       
@@ -193,11 +205,8 @@ function ControlButtons(containerControl, map) {
   clearUI.style.cursor = 'pointer';
   clearUI.style.textAlign = 'center';
   clearUI.title = '';
-  clearUI.style.backgroundColor = 'white';;
+  clearUI.style.backgroundColor = 'white';
   clearUI.style.color = 'black';   
-  clearUI.style.borderStyle = '2px';
-  clearUI.style.borderColor = 'black';
-  clearUI.style.borderColor = 'black';
   containerControl.appendChild(clearUI);  
   // Set CSS for the submit button interior
   var clearText = document.createElement('div');
@@ -236,6 +245,17 @@ function ControlButtons(containerControl, map) {
 
   
 }
+
+function ControlLatLong(containerControl, map) { 
+  /*
+  Crates a div box with the polygon latitude and longitude
+  */
+  containerControl.innerHTML = '<b>HOLA HOLA HOLA</b>';
+  containerControl.id = 'latLongBox';
+  containerControl.style.display = 'none';      
+      
+}
+
 
 google.maps.event.addDomListener(window, 'load', initialize);
 

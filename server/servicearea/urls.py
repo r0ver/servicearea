@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, include, url
 from shape.models import Shape
 from rest_framework import viewsets, routers
- 
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
@@ -14,10 +13,16 @@ class PermissionViewSet(viewsets.ModelViewSet):
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     model = User
-    
+ 
 class ShapeViewSet(viewsets.ModelViewSet):
     model = Shape
 
+    def create(self, request, *args, **kwargs):
+        response = super(ShapeViewSet, self).create(request, *args, **kwargs)
+        myurl = response.data['url']
+        response.set_cookie('servicearea', myurl)
+        return response
+        
  
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()

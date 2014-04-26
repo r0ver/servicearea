@@ -39,20 +39,19 @@ INSTALLED_APPS = (
     'shape',
     'rest_framework',
 )
-
+        
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'servicearea.settings.DisableCSRF'
 )
 
+
 ROOT_URLCONF = 'servicearea.urls'
-
 WSGI_APPLICATION = 'servicearea.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -94,6 +93,12 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.AllowAny'
     ]
 }
+
+# XXX: I Disable CSRF to be able to do anonymous posts
+# http://stackoverflow.com/questions/1650941/django-csrf-framework-cannot-be-disabled-and-is-breaking-my-site/4631626#4631626
+class DisableCSRF(object):
+    def process_request(self, request):
+        setattr(request, '_dont_enforce_csrf_checks', True)

@@ -111,19 +111,9 @@ function initialize() {
         scaledSize: new google.maps.Size(25, 25)
       };
 
-      // Create a marker for each place.
-      var marker = new google.maps.Marker({
-        map: map,
-        icon: image,
-        title: place.name,
-        position: place.geometry.location
-      });
-
-      markers.push(marker);
-      bounds.extend(place.geometry.location);
+     map.fitBounds(extendOnePlace(place.geometry.location));             
     }
 
-    map.fitBounds(bounds);
   });
   // [END region_getplaces]
 
@@ -190,12 +180,16 @@ function initialize() {
 
 function handleNoGeolocation(map) {
         // Using Ockland by default
-        var pos = new google.maps.LatLng(37.712569, -122.219743);      
+        var pos = new google.maps.LatLng(37.712569, -122.219743);                   
+        map.fitBounds(extendOnePlace(pos));
+}
+
+function extendOnePlace(pos) {
         var sw = new google.maps.LatLng(pos.lat() - 0.02, pos.lng() - 0.10);
         var ne = new google.maps.LatLng(pos.lat() + 0.02, pos.lng() + 0.10);
         var bounds = new google.maps.LatLngBounds(sw);  
         bounds.extend(ne);
-        map.fitBounds(bounds);
+        return bounds;
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

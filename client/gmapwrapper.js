@@ -124,12 +124,15 @@ function initialize() {
             newShape.type = e.type;
             google.maps.event.addListener(newShape, 'click', function() {
               setSelection(newShape);
-              latLongBox.style.display = 'inline';    
+              updateLatLong();    
             });
             setSelection(newShape); 
-            latLongBox.style.display = 'inline';    
+            updateLatLong();
           }
-  });  
+  });
+    
+
+
     
   drawingManager.setMap(map);       
     
@@ -176,6 +179,11 @@ function setSelection(shape) {
     clearSelection();
     selectedShape = shape;
     shape.setEditable(true);
+    
+    google.maps.event.addListener(shape, 'bounds_changed', function() {
+            updateLatLong(); }
+  );    
+    
 }
 
 function deleteSelectedShape() {
@@ -246,14 +254,33 @@ function ControlButtons(containerControl, map) {
   
 }
 
-function ControlLatLong(containerControl, map) { 
+function ControlLatLong(box, map) { 
   /*
   Crates a div box with the polygon latitude and longitude
   */
-  containerControl.innerHTML = '<b>HOLA HOLA HOLA</b>';
-  containerControl.id = 'latLongBox';
-  containerControl.style.display = 'none';      
+  box.style.padding = '5px';
+  box.style.margin = '6px';
+  box.style.backgroundColor = 'white'
+  box.style.border = '1px solid #b4b2ac'
+  box.innerHTML = "Northwest: <span id='nwLatLong'>N</span> | Southeast: <span id='seLatLong'>N</span>";
+  box.id = 'latLongBox';
+  box.style.display = 'none';      
       
+}
+
+function updateLatLong() {
+    neLat = selectedShape.getBounds().getNorthEast().lat().toFixed(2);
+    neLong = selectedShape.getBounds().getNorthEast().lng().toFixed(2);
+    swLat = selectedShape.getBounds().getSouthWest().lat().toFixed(2);
+    swLong = selectedShape.getBounds().getSouthWest().lng().toFixed(2);
+    
+    var neLatLong = document.getElementById("nwLatLong");
+    neLatLong.innerHTML = ' Lat ' + neLat + ' Lng ' + swLong;
+    
+    var neLatLong = document.getElementById("seLatLong");
+    neLatLong.innerHTML = ' Lat ' + swLat + ' Lng ' + neLong;
+    latLongBox.style.display = 'inline'; 
+    
 }
 
 

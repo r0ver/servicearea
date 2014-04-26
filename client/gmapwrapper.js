@@ -26,72 +26,8 @@
 
 var WHITEBUTTON = 0;
 var BLUEBUTTON = 1;
-
-function ControlButtons(containerControl, map) {
-  /*
-    CreateControlButton :: Creates buttons controls and gives the style.
-    controlDiv -> containerControl
-    controlUI -> submitUI
-    controlText -> submitText
-  */
-        
-  // Set CSS styles for the DIV containing the control
-  containerControl.style.padding = '16px';
-
-// Set CSS for the clear button
-  var clearUI = document.createElement('div'); 
-  clearUI.style.float = 'left';
-  clearUI.style.width = '100px';
-  clearUI.style.margin = '0 10px 0 0';
-  clearUI.style.cursor = 'pointer';
-  clearUI.style.textAlign = 'center';
-  clearUI.title = '';
-  clearUI.style.backgroundColor = 'white';;
-  clearUI.style.color = 'black';   
-  clearUI.style.borderStyle = '2px';
-  clearUI.style.borderColor = 'black';
-  clearUI.style.borderColor = 'black';
-  containerControl.appendChild(clearUI);  
-  // Set CSS for the submit button interior
-  var clearText = document.createElement('div');
-  clearText.style.fontFamily = 'Roboto,Arial,sans-serif';
-  clearText.style.fontSize = '15px';
-  clearText.style.padding = '10px 22px 10px 22px';
-  clearText.innerHTML = 'Clear';
-  clearUI.appendChild(clearText);
-  // Setup the click event listeners 
-  google.maps.event.addDomListener(clearUI, 'click', function() {
-                            var newchicago = new google.maps.LatLng(-41.850033, 87.6500523);  
-                            map.setCenter(newchicago)
-                    });      
-    
-    
-  // Set CSS for the submit button
-  var submitUI = document.createElement('div');
-  submitUI.style.float = 'left';
-  submitUI.style.width = '100px';    
-  submitUI.style.cursor = 'pointer';
-  submitUI.style.textAlign = 'center';
-  submitUI.title = '';
-  submitUI.style.backgroundColor = '#1E90FF';
-  submitUI.style.color = 'white';        
-  submitUI.style.borderStyle = 'none';
-  containerControl.appendChild(submitUI);  
-  // Set CSS for the submit button interior
-  var submitText = document.createElement('div');
-  submitText.style.fontFamily = 'Roboto,Arial,sans-serif';
-  submitText.style.fontSize = '15px';
-  submitText.style.padding = '10px 22px 10px 22px';
-  submitText.innerHTML = 'Submit';
-  submitUI.appendChild(submitText);
-  // Setup the click event listeners 
-  google.maps.event.addDomListener(submitUI, 'click', function() {
-                            var chicago = new google.maps.LatLng(41.850033, -87.6500523);  
-                            map.setCenter(chicago)
-                    }); 
-
-  
-}
+var selectedShape;
+var drawingManager;
 
 function initialize() {
   var markers = [];
@@ -156,7 +92,7 @@ function initialize() {
   });
     
   // Adding a DrawingManager
-    var drawingManager = new google.maps.drawing.DrawingManager({
+    drawingManager = new google.maps.drawing.DrawingManager({
     drawingControl: true,
     drawingControlOptions: {
       position: google.maps.ControlPosition.BOTTOM_CENTER,
@@ -166,14 +102,6 @@ function initialize() {
     },
     markerOptions: {
       icon: 'images/beachflag.png'
-    },
-    circleOptions: {
-      fillColor: '#ffff00',
-      fillOpacity: 1,
-      
-      clickable: false,
-      editable: true,
-      zIndex: 1
     },
     rectangleOptions: {
         strokeWeight: 1,
@@ -195,14 +123,13 @@ function initialize() {
             google.maps.event.addListener(newShape, 'click', function() {
               setSelection(newShape);
             });
-            setSelection(newShape);
-            
+            setSelection(newShape); 
           }
   });  
     
   drawingManager.setMap(map);       
     
-  /* Add submit button */
+  /* Controllers: Add submit and clear button */
   var controlDiv = document.createElement('div');
   var homeControl = new ControlButtons(controlDiv, map); 
   controlDiv.index = 1;
@@ -211,17 +138,103 @@ function initialize() {
 }
 
 function handleNoGeolocation(map) {
-        // Using Ockland by default
+        // Using Oackland by default
         var pos = new google.maps.LatLng(37.712569, -122.219743);                   
         map.fitBounds(extendOnePlace(pos));
 }
 
 function extendOnePlace(pos) {
+        // used with fitbounds to get a x13 zoom 
         var sw = new google.maps.LatLng(pos.lat() - 0.02, pos.lng() - 0.10);
         var ne = new google.maps.LatLng(pos.lat() + 0.02, pos.lng() + 0.10);
         var bounds = new google.maps.LatLngBounds(sw);  
         bounds.extend(ne);
         return bounds;
+}
+ 
+function clearSelection() {
+    // Selection is the polygon
+    if (selectedShape) {
+      selectedShape.setEditable(false);
+      selectedShape = null;
+    }
+}
+
+function setSelection(shape) {
+    // Selection is the polygon
+    clearSelection();
+    selectedShape = shape;
+    shape.setEditable(true);
+}
+
+function deleteSelectedShape() {
+    if (selectedShape) {
+      selectedShape.setMap(null);
+    }
+
+    drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
+    drawingManager.setOptions({drawingControl: true});   
+  }
+
+      
+function ControlButtons(containerControl, map) {
+  /*
+    CreateControlButton :: Creates buttons controls and gives them style.
+  */
+        
+  // Set CSS styles for the DIV containing the control
+  containerControl.style.padding = '16px';
+
+  // Set CSS for the clear button
+  var clearUI = document.createElement('div'); 
+  clearUI.style.float = 'left';
+  clearUI.style.width = '100px';
+  clearUI.style.margin = '0 10px 0 0';
+  clearUI.style.cursor = 'pointer';
+  clearUI.style.textAlign = 'center';
+  clearUI.title = '';
+  clearUI.style.backgroundColor = 'white';;
+  clearUI.style.color = 'black';   
+  clearUI.style.borderStyle = '2px';
+  clearUI.style.borderColor = 'black';
+  clearUI.style.borderColor = 'black';
+  containerControl.appendChild(clearUI);  
+  // Set CSS for the submit button interior
+  var clearText = document.createElement('div');
+  clearText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  clearText.style.fontSize = '15px';
+  clearText.style.padding = '10px 22px 10px 22px';
+  clearText.innerHTML = 'Clear';
+  clearUI.appendChild(clearText);
+  // Setup the click event listeners 
+  google.maps.event.addDomListener(clearUI, 'click', deleteSelectedShape);      
+    
+    
+  // Set CSS for the submit button
+  var submitUI = document.createElement('div');
+  submitUI.style.float = 'left';
+  submitUI.style.width = '100px';    
+  submitUI.style.cursor = 'pointer';
+  submitUI.style.textAlign = 'center';
+  submitUI.title = '';
+  submitUI.style.backgroundColor = '#1E90FF';
+  submitUI.style.color = 'white';        
+  submitUI.style.borderStyle = 'none';
+  containerControl.appendChild(submitUI);  
+  // Set CSS for the submit button interior
+  var submitText = document.createElement('div');
+  submitText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  submitText.style.fontSize = '15px';
+  submitText.style.padding = '10px 22px 10px 22px';
+  submitText.innerHTML = 'Submit';
+  submitUI.appendChild(submitText);
+  // Setup the click event listeners 
+  google.maps.event.addDomListener(submitUI, 'click', function() {
+                            var chicago = new google.maps.LatLng(41.850033, -87.6500523);  
+                            map.setCenter(chicago)
+                    }); 
+
+  
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

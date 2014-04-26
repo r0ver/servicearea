@@ -19,14 +19,55 @@
     Hiding tools after one polygon
     http://stackoverflow.com/questions/14166546/google-maps-drawing-manager-limit-to-1-polygon
     
+    Adding Buttons
+    https://developers.google.com/maps/documentation/javascript/examples/control-custom?csw=1
+    
 */
+var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+
+function  HomeControl(controlDiv, map) {
+    
+  // Set CSS styles for the DIV containing the control
+  // Setting padding to 5 px will offset the control
+  // from the edge of the map
+  controlDiv.style.padding = '16px';
+
+  // Set CSS for the control border
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#1E90FF';
+  controlUI.style.borderStyle = 'none';
+  controlUI.style.color = 'white';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = '';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior
+  var controlText = document.createElement('div');
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '15px';
+  
+  controlText.style.padding = '10px 22px 10px 22px';
+  
+  controlText.innerHTML = 'Submit Area';
+  controlUI.appendChild(controlText);
+
+  // Setup the click event listeners: simply set the map to
+  // Chicago
+  google.maps.event.addDomListener(controlUI, 'click', function() {
+    map.setCenter(chicago)
+  });
+
+}
+
 
 function initialize() {
   var markers = [];
     
   var mapOptions = {
     zoom: 13,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    mapTypeControl: false,
   };
   var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);    
 
@@ -79,7 +120,6 @@ function initialize() {
       });
 
       markers.push(marker);
-
       bounds.extend(place.geometry.location);
     }
 
@@ -109,12 +149,13 @@ function initialize() {
     circleOptions: {
       fillColor: '#ffff00',
       fillOpacity: 1,
-      strokeWeight: 5,
+      
       clickable: false,
       editable: true,
       zIndex: 1
     },
     rectangleOptions: {
+        strokeWeight: 1,
             editable: true
     }
   });
@@ -137,30 +178,18 @@ function initialize() {
           }
   });  
     
-  drawingManager.setMap(map);   
+  drawingManager.setMap(map);       
     
+  /* Add submit button */
+  var homeControlDiv = document.createElement('div');
+  var homeControl = new HomeControl(homeControlDiv, map);
+  homeControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);  
     
-}
-
-function handleNoGeolocation(errorFlag) {
-  if (errorFlag) {
-    var content = 'Error: The Geolocation service failed.';
-  } else {
-    var content = 'Error: Your browser doesn\'t support geolocation.';
-  }
-
-  var options = {
-    map: map,
-    position: new google.maps.LatLng(60, 105),
-    content: content,
-    zoom: 13
-  };
-
-  var infowindow = new google.maps.InfoWindow(options);
-  map.setCenter(options.position);
 }
 
 function handleNoGeolocation(map) {
+        // Using Ockland by default
         var pos = new google.maps.LatLng(37.712569, -122.219743);      
         var sw = new google.maps.LatLng(pos.lat() - 0.02, pos.lng() - 0.10);
         var ne = new google.maps.LatLng(pos.lat() + 0.02, pos.lng() + 0.10);

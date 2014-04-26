@@ -23,20 +23,21 @@
     https://developers.google.com/maps/documentation/javascript/examples/control-custom?csw=1
     
 */
-var chicago = new google.maps.LatLng(41.850033, -87.6500523);
 
-function  HomeControl(controlDiv, map) {
-    
+var WHITEBUTTON = 0;
+var BLUEBUTTON = 1;
+
+function ControlButton(controlDiv, map, label, buttonStyle, buttonFunction) {
+  /*
+    CreateControlButton :: Creates buttons controls and gives the style.
+  */
+        
   // Set CSS styles for the DIV containing the control
-  // Setting padding to 5 px will offset the control
-  // from the edge of the map
   controlDiv.style.padding = '16px';
 
   // Set CSS for the control border
   var controlUI = document.createElement('div');
-  controlUI.style.backgroundColor = '#1E90FF';
-  controlUI.style.borderStyle = 'none';
-  controlUI.style.color = 'white';
+  
   controlUI.style.cursor = 'pointer';
   controlUI.style.textAlign = 'center';
   controlUI.title = '';
@@ -46,20 +47,25 @@ function  HomeControl(controlDiv, map) {
   var controlText = document.createElement('div');
   controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
   controlText.style.fontSize = '15px';
-  
   controlText.style.padding = '10px 22px 10px 22px';
-  
-  controlText.innerHTML = 'Submit Area';
+  controlText.innerHTML = label;
   controlUI.appendChild(controlText);
 
-  // Setup the click event listeners: simply set the map to
-  // Chicago
-  google.maps.event.addDomListener(controlUI, 'click', function() {
-    map.setCenter(chicago)
-  });
-
+  if (buttonStyle) {
+      controlUI.style.backgroundColor = '#1E90FF';
+      controlUI.style.color = 'white';        
+      controlUI.style.borderStyle = 'none';
+  } else {
+      controlUI.style.backgroundColor = 'white';
+      controlUI.style.color = 'black';   
+      controlUI.style.borderStyle = '1px';
+      controlUI.style.borderColor = 'black';
+  }
+    
+      
+  // Setup the click event listeners 
+  google.maps.event.addDomListener(controlUI, 'click', buttonFunction);
 }
-
 
 function initialize() {
   var markers = [];
@@ -110,7 +116,6 @@ function initialize() {
         anchor: new google.maps.Point(17, 34),
         scaledSize: new google.maps.Size(25, 25)
       };
-
      map.fitBounds(extendOnePlace(place.geometry.location));             
     }
 
@@ -150,6 +155,7 @@ function initialize() {
     }
   });
     
+  // Hide DrawingControler when one shape is drawed    
   google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
             if (e.type != google.maps.drawing.OverlayType.MARKER) {
             // Switch back to non-drawing mode after drawing a shape.
@@ -171,10 +177,13 @@ function initialize() {
   drawingManager.setMap(map);       
     
   /* Add submit button */
-  var homeControlDiv = document.createElement('div');
-  var homeControl = new HomeControl(homeControlDiv, map);
-  homeControlDiv.index = 1;
-  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);  
+  var controlDiv = document.createElement('div');
+  var homeControl = new ControlButton(controlDiv, map, 'Submit', BLUEBUTTON, function() {
+                            var chicago = new google.maps.LatLng(41.850033, -87.6500523);  
+                            map.setCenter(chicago)
+                    }); 
+  controlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
     
 }
 

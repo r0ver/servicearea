@@ -27,44 +27,70 @@
 var WHITEBUTTON = 0;
 var BLUEBUTTON = 1;
 
-function ControlButton(controlDiv, map, label, buttonStyle, buttonFunction) {
+function ControlButtons(containerControl, map) {
   /*
     CreateControlButton :: Creates buttons controls and gives the style.
+    controlDiv -> containerControl
+    controlUI -> submitUI
+    controlText -> submitText
   */
         
   // Set CSS styles for the DIV containing the control
-  controlDiv.style.padding = '16px';
+  containerControl.style.padding = '16px';
 
-  // Set CSS for the control border
-  var controlUI = document.createElement('div');
-  
-  controlUI.style.cursor = 'pointer';
-  controlUI.style.textAlign = 'center';
-  controlUI.title = '';
-  controlDiv.appendChild(controlUI);
-
-  // Set CSS for the control interior
-  var controlText = document.createElement('div');
-  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-  controlText.style.fontSize = '15px';
-  controlText.style.padding = '10px 22px 10px 22px';
-  controlText.innerHTML = label;
-  controlUI.appendChild(controlText);
-
-  if (buttonStyle) {
-      controlUI.style.backgroundColor = '#1E90FF';
-      controlUI.style.color = 'white';        
-      controlUI.style.borderStyle = 'none';
-  } else {
-      controlUI.style.backgroundColor = 'white';
-      controlUI.style.color = 'black';   
-      controlUI.style.borderStyle = '1px';
-      controlUI.style.borderColor = 'black';
-  }
-    
-      
+// Set CSS for the clear button
+  var clearUI = document.createElement('div'); 
+  clearUI.style.float = 'left';
+  clearUI.style.width = '100px';
+  clearUI.style.margin = '0 10px 0 0';
+  clearUI.style.cursor = 'pointer';
+  clearUI.style.textAlign = 'center';
+  clearUI.title = '';
+  clearUI.style.backgroundColor = 'white';;
+  clearUI.style.color = 'black';   
+  clearUI.style.borderStyle = '2px';
+  clearUI.style.borderColor = 'black';
+  clearUI.style.borderColor = 'black';
+  containerControl.appendChild(clearUI);  
+  // Set CSS for the submit button interior
+  var clearText = document.createElement('div');
+  clearText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  clearText.style.fontSize = '15px';
+  clearText.style.padding = '10px 22px 10px 22px';
+  clearText.innerHTML = 'Clear';
+  clearUI.appendChild(clearText);
   // Setup the click event listeners 
-  google.maps.event.addDomListener(controlUI, 'click', buttonFunction);
+  google.maps.event.addDomListener(clearUI, 'click', function() {
+                            var newchicago = new google.maps.LatLng(-41.850033, 87.6500523);  
+                            map.setCenter(newchicago)
+                    });      
+    
+    
+  // Set CSS for the submit button
+  var submitUI = document.createElement('div');
+  submitUI.style.float = 'left';
+  submitUI.style.width = '100px';    
+  submitUI.style.cursor = 'pointer';
+  submitUI.style.textAlign = 'center';
+  submitUI.title = '';
+  submitUI.style.backgroundColor = '#1E90FF';
+  submitUI.style.color = 'white';        
+  submitUI.style.borderStyle = 'none';
+  containerControl.appendChild(submitUI);  
+  // Set CSS for the submit button interior
+  var submitText = document.createElement('div');
+  submitText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  submitText.style.fontSize = '15px';
+  submitText.style.padding = '10px 22px 10px 22px';
+  submitText.innerHTML = 'Submit';
+  submitUI.appendChild(submitText);
+  // Setup the click event listeners 
+  google.maps.event.addDomListener(submitUI, 'click', function() {
+                            var chicago = new google.maps.LatLng(41.850033, -87.6500523);  
+                            map.setCenter(chicago)
+                    }); 
+
+  
 }
 
 function initialize() {
@@ -178,10 +204,7 @@ function initialize() {
     
   /* Add submit button */
   var controlDiv = document.createElement('div');
-  var homeControl = new ControlButton(controlDiv, map, 'Submit', BLUEBUTTON, function() {
-                            var chicago = new google.maps.LatLng(41.850033, -87.6500523);  
-                            map.setCenter(chicago)
-                    }); 
+  var homeControl = new ControlButtons(controlDiv, map); 
   controlDiv.index = 1;
   map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv);
     

@@ -194,6 +194,7 @@ function deleteSelectedShape() {
     latLongBox.style.display = 'none';
     drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
     drawingManager.setOptions({drawingControl: true});  
+    selectedShape = null;
   }
 
       
@@ -245,13 +246,30 @@ function ControlButtons(containerControl, map) {
   submitText.style.padding = '10px 22px 10px 22px';
   submitText.innerHTML = 'Submit';
   submitUI.appendChild(submitText);
-  // Setup the click event listeners 
-  google.maps.event.addDomListener(submitUI, 'click', function() {
-                            var chicago = new google.maps.LatLng(41.850033, -87.6500523);  
-                            map.setCenter(chicago)
-                    }); 
-
   
+  // Setup the Submit button behavior 
+  google.maps.event.addDomListener(submitUI, 'click', function() {
+                            if (selectedShape) { 
+                                // there's a polygon
+                                 var shapeCoords = {};
+                                 getSelectedPlaceCoord(shapeCoords);
+                                 console.log(shapeCoords.neLat + ' ' + shapeCoords.neLong + shapeCoords.swLat + ' ' + shapeCoords.swLong )
+                                 
+                                 // I assume client running on same domain as server. 
+                                 var url = '/api/shape/' ; 
+                                
+                                 // Building the json manually 
+                                 var jsonToPost = '{"northeast_latq":' + shapeCoords.neLat + ',' +
+                                                    '"northeast_lng":' + shapeCoords.neLong + ',' +
+                                                    '"southwest_lat":' + shapeCoords.swLat + ',' +
+                                                    '"southwest_lng":' + shapeCoords.swLong  + '}'; 
+                                 function processResponse(responseText) { alert("There was an error while sending the coords."); } ;
+                                  _SU3.postAjax(url, processResponse, jsonToPost);
+                            } else { 
+                                //there isn't a polygon
+                                alert("You must define an area");
+                            } 
+                    }); 
 }
 
 function ControlLatLong(box, map) { 
@@ -265,24 +283,29 @@ function ControlLatLong(box, map) {
   box.innerHTML = "Northwest: <span id='nwLatLong'>N</span> | Southeast: <span id='seLatLong'>N</span>";
   box.id = 'latLongBox';
   box.style.display = 'none';      
-      
 }
 
+
 function updateLatLong() {
-    neLat = selectedShape.getBounds().getNorthEast().lat().toFixed(2);
-    neLong = selectedShape.getBounds().getNorthEast().lng().toFixed(2);
-    swLat = selectedShape.getBounds().getSouthWest().lat().toFixed(2);
-    swLong = selectedShape.getBounds().getSouthWest().lng().toFixed(2);
+    var shapeCoords = {};
+    getSelectedPlaceCoord(shapeCoords);
     
     var neLatLong = document.getElementById("nwLatLong");
-    neLatLong.innerHTML = ' Lat ' + neLat + ' Lng ' + swLong;
+    neLatLong.innerHTML = ' Lat ' + shapeCoords.neLat + ' Lng ' + shapeCoords.swLong;
     
     var neLatLong = document.getElementById("seLatLong");
-    neLatLong.innerHTML = ' Lat ' + swLat + ' Lng ' + neLong;
+    neLatLong.innerHTML = ' Lat ' + shapeCoords.swLat + ' Lng ' + shapeCoords.neLong;
     latLongBox.style.display = 'inline'; 
     
 }
 
+function getSelectedPlaceCoord (shapeCoords) {
+    shapeCoords.neLat = selectedShape.getBounds().getNorthEast().lat().toFixed(2);
+    shapeCoords.neLong = selectedShape.getBounds().getNorthEast().lng().toFixed(2);
+    shapeCoords.swLat = selectedShape.getBounds().getSouthWest().lat().toFixed(2);
+    shapeCoords.swLong = selectedShape.getBounds().getSouthWest().lng().toFixed(2);
+    return shapeCoords;
+}
 
 google.maps.event.addDomListener(window, 'load', initialize);
 

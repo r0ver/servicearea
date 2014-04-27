@@ -23,7 +23,7 @@
     https://developers.google.com/maps/documentation/javascript/examples/control-custom?csw=1
     
 */
-
+ 
 var WHITEBUTTON = 0;
 var BLUEBUTTON = 1;
 var selectedShape;
@@ -253,18 +253,22 @@ function ControlButtons(containerControl, map) {
                                 // there's a polygon
                                  var shapeCoords = {};
                                  getSelectedPlaceCoord(shapeCoords);
-                                 console.log(shapeCoords.neLat + ' ' + shapeCoords.neLong + shapeCoords.swLat + ' ' + shapeCoords.swLong )
+                                 // console.log(shapeCoords.neLat + ' ' + shapeCoords.neLong + shapeCoords.swLat + ' ' + shapeCoords.swLong )
                                  
                                  // I assume client running on same domain as server. 
                                  var url = '/api/shape/' ; 
                                 
                                  // Building the json manually 
-                                 var jsonToPost = '{"northeast_latq":' + shapeCoords.neLat + ',' +
+                                 var jsonToPost = '{"northeast_lat":' + shapeCoords.neLat + ',' +
                                                     '"northeast_lng":' + shapeCoords.neLong + ',' +
                                                     '"southwest_lat":' + shapeCoords.swLat + ',' +
                                                     '"southwest_lng":' + shapeCoords.swLong  + '}'; 
-                                 function processResponse(responseText) { alert("There was an error while sending the coords."); } ;
+                                 function processResponse(responseText) {  window.open("defined-area.html","_self");
+                                                                        } ;
                                   _SU3.postAjax(url, processResponse, jsonToPost);
+                                 
+                                 
+                                
                             } else { 
                                 //there isn't a polygon
                                 alert("You must define an area");
@@ -291,19 +295,19 @@ function updateLatLong() {
     getSelectedPlaceCoord(shapeCoords);
     
     var neLatLong = document.getElementById("nwLatLong");
-    neLatLong.innerHTML = ' Lat ' + shapeCoords.neLat + ' Lng ' + shapeCoords.swLong;
+    neLatLong.innerHTML = ' Lat ' + shapeCoords.neLat.toFixed(2) + ' Lng ' + shapeCoords.swLong.toFixed(2);
     
     var neLatLong = document.getElementById("seLatLong");
-    neLatLong.innerHTML = ' Lat ' + shapeCoords.swLat + ' Lng ' + shapeCoords.neLong;
+    neLatLong.innerHTML = ' Lat ' + shapeCoords.swLat.toFixed(2) + ' Lng ' + shapeCoords.neLong.toFixed(2);
     latLongBox.style.display = 'inline'; 
     
 }
 
 function getSelectedPlaceCoord (shapeCoords) {
-    shapeCoords.neLat = selectedShape.getBounds().getNorthEast().lat().toFixed(2);
-    shapeCoords.neLong = selectedShape.getBounds().getNorthEast().lng().toFixed(2);
-    shapeCoords.swLat = selectedShape.getBounds().getSouthWest().lat().toFixed(2);
-    shapeCoords.swLong = selectedShape.getBounds().getSouthWest().lng().toFixed(2);
+    shapeCoords.neLat = selectedShape.getBounds().getNorthEast().lat();
+    shapeCoords.neLong = selectedShape.getBounds().getNorthEast().lng();
+    shapeCoords.swLat = selectedShape.getBounds().getSouthWest().lat();
+    shapeCoords.swLong = selectedShape.getBounds().getSouthWest().lng();
     return shapeCoords;
 }
 

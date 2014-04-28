@@ -19,14 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'y9+aw2+y6&%^-9hx*x%t!-jd)wbndo8+f9js9mhn7ds5c=tzq7'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -55,15 +47,9 @@ WSGI_APPLICATION = 'servicearea.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+from development import *
 
-DATABASES = {
-    'default': { 
-        'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'servicearea',                     
-        'USER': 'admin',
-        'PASSWORD': 'saadmin',
-    }
-}
+# production: from production import *
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -83,6 +69,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
 
 REST_FRAMEWORK = {
     # Use hyperlinked styles by default.

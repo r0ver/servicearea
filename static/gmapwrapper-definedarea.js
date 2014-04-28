@@ -26,8 +26,8 @@ function initialize() {
 
     function placeMarker(location) {
         
-        var greenIcon = 'images/greenflag.png'
-        var redIcon = 'images/redflag.png'
+        var greenIcon = 'greenflag.png'
+        var redIcon = 'redflag.png'
         
         if ( ((shapeJson.northeast_lat > location.lat()) && (location.lat()  > shapeJson.southwest_lat)) && 
              ((shapeJson.northeast_lng > location.lng()) && (location.lng()  > shapeJson.southwest_lng)) ){

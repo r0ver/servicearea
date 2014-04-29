@@ -3,6 +3,8 @@ Servicearea
 
 A proof of concept apps which allows you to draw a rectangle in a Google Map using Google Maps Api V3 and then add flags in a map. If the place is inside the area previously drawn, the flag will be green, otherwise red.
 
+Test this application [here](http://djangoapp-env-ebkbthnsf6.elasticbeanstalk.com/static/index.html). It was tested with Chrome v34 and v36.
+
 Design and coding decisions 
 ===========================
 
@@ -65,7 +67,7 @@ The application is made with Google App Engine API and Django. It can be deploye
 AWS Deployement
 ===============
 
-This application was tested with AWS using same Python and Django version described above.  Follow all the steps described at [http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_Python_django.html Deploying a Django Application to AWS Elastic Beanstalk] 
+This application was tested with AWS using same Python and Django version described above.  Follow all the steps described at [Deploying a Django Application x ccto AWS Elastic Beanstalk](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_Python_django.html)
 Once you complete the tutorial, replace the django app created with this one. 
 
 

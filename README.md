@@ -22,11 +22,16 @@ The html client is the result of merge of Google Maps API, therefore this applic
 
 Geolocations is used to detect the location of the user and based on that the map to be shown will be the place where the user is at the moment. If the user doesn't allow the browser to ask for the location, Aockland International Airport in California will be displayed as the default location. The maps location can be changed using the search box, this functionality is provided by Places library. The Drawing library is the one which provides the rectangle functionality.
 
-When the rectangle is ready and the user clicks in submit, the rectangle coordinates are sent to the backend application. The four coordinates are saved on the backend and the browser will store a cookie with the url of the these coordinates, then the browser shows a new map and using the cookie's value the map will determinte the coordinates of the map to be shown and a 'hidden rectangle' which is the same drawn in the previous screen. 
+When the rectangle is ready and the user clicks in submit, the rectangle coordinates are sent to the backend application. The four coordinates are saved on the backend and the browser will store a cookie with the url of the these coordinates, then the browser shows a new map and using the cookie's value the map will determinte the coordinates of the map to be shown and a 'hidden rectangle' which is the same drawn in the previous screen. If the user clicks 'inside' of the rectangle, the flag will be green. Otherwise red.
 
+The second screen, coded in the defined-area.html and gmapwrapper-definedarea.js. These doesn't use any special Google Map Library, it just calculate where the click is made and if it fits with the coordinate.
+
+The source code has comments with urls to the code reused, for futher details look there, along with the API sample, the code should be self descriptive, although it might require Google Maps api understanding.
+
+The only third party being used besides Google Maps Api is the su3.js file, which implements a post and get method. Besides that, this application is mainly developed with plain javascript to focus just on Google Maps Api reuse and understanding. 
 
 Local Deployment
-================
+================ 
 
 The application is made with Google App Engine API and Django. It can be deployed locally or in AWS. 
 
@@ -60,7 +65,7 @@ The application is made with Google App Engine API and Django. It can be deploye
 AWS Deployement
 ===============
 
-This application was tested with AWS using same Python and Django version described above.  Follow all the steps described at [Deploying a Django Application to AWS Elastic Beanstalk http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_Python_django.html] 
+This application was tested with AWS using same Python and Django version described above.  Follow all the steps described at [http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_Python_django.html Deploying a Django Application to AWS Elastic Beanstalk] 
 Once you complete the tutorial, replace the django app created with this one. 
 
 

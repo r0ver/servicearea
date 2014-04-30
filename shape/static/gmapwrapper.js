@@ -253,7 +253,6 @@ function ControlButtons(containerControl, map) {
                                 // there's a polygon
                                  var shapeCoords = {};
                                  getSelectedPlaceCoord(shapeCoords);
-                                 // console.log(shapeCoords.neLat + ' ' + shapeCoords.neLong + shapeCoords.swLat + ' ' + shapeCoords.swLong )
                                  
                                  // I assume client running on same domain as server. 
                                  var url = '/api/shape/' ; 

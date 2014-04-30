@@ -1,5 +1,3 @@
-var gLocation;
-
 function initialize() {
 
   function processResponse(responseText) { 
@@ -36,8 +34,6 @@ function initialize() {
             iconFile = redIcon;
         }
         
-        console.log(location);
-        gLocation = location;
         var marker = new google.maps.Marker({
             position: location, 
             map: map,
@@ -46,7 +42,6 @@ function initialize() {
   };
     
   var myUrl = getCookie('servicearea');
-  console.log(myUrl);
   _SU3.ajax(myUrl, processResponse);  
     
   
